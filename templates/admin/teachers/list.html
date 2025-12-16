@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Teachers - School Management System{% endblock %}
+
+{% block content %}
+{% include 'partials/admin_header.html' %}
+
+<div class="dashboard-layout">
+    {% include 'partials/sidebar.html' %}
+
+    <main class="main-content">
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">Teachers</h1>
+                <div class="breadcrumb">
+                    <a href="{% url 'admin_dashboard' %}">Dashboard</a>
+                    <span>/</span>
+                    <span>Teachers</span>
+                </div>
+            </div>
+            <a href="{% url 'teacher_add' %}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Add Teacher
+            </a>
+        </div>
+
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{% if message.tags == 'error' %}error{% else %}{{ message.tags }}{% endif %}">
+            <i
+                class="fas fa-{% if message.tags == 'error' %}exclamation-circle{% elif message.tags == 'success' %}check-circle{% else %}info-circle{% endif %}"></i>
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
+
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Employee ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Mobile</th>
+                        <th>Qualification</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for teacher in teachers %}
+                    <tr>
+                        <td>{{ teacher.employee_id }}</td>
+                        <td>
+                            <div class="flex items-center gap-2">
+                                <div class="recent-avatar"
+                                    style="width: 35px; height: 35px; font-size: 0.875rem; background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                                    {{ teacher.name|slice:":1" }}{{ teacher.surname|slice:":1" }}
+                                </div>
+                                {{ teacher.name }} {{ teacher.surname }}
+                            </div>
+                        </td>
+                        <td>{{ teacher.email }}</td>
+                        <td>{{ teacher.mobile|default:"-" }}</td>
+                        <td>{{ teacher.qualification|default:"-" }}</td>
+                        <td>
+                            <div class="flex gap-1">
+                                <a href="{% url 'teacher_detail' teacher.pk %}" class="btn btn-sm btn-secondary"
+                                    title="View">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a href="{% url 'teacher_edit' teacher.pk %}" class="btn btn-sm btn-warning"
+                                    title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="{% url 'teacher_delete' teacher.pk %}" class="btn btn-sm btn-danger"
+                                    title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center text-gray">No teachers found</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% if teachers.has_other_pages %}
+        <div class="pagination">
+            {% if teachers.has_previous %}
+            <a href="?page={{ teachers.previous_page_number }}" class="page-link">
+                <i class="fas fa-chevron-left"></i>
+            </a>
+            {% endif %}
+
+            {% for num in teachers.paginator.page_range %}
+            <a href="?page={{ num }}" class="page-link {% if teachers.number == num %}active{% endif %}">
+                {{ num }}
+            </a>
+            {% endfor %}
+
+            {% if teachers.has_next %}
+            <a href="?page={{ teachers.next_page_number }}" class="page-link">
+                <i class="fas fa-chevron-right"></i>
+            </a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </main>
+</div>
+
+{% include 'partials/footer.html' %}
+{% endblock %}

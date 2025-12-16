@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Fees - School Management System{% endblock %}
+
+{% block content %}
+{% include 'partials/admin_header.html' %}
+
+<div class="dashboard-layout">
+    {% include 'partials/sidebar.html' %}
+
+    <main class="main-content">
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">Fees Management</h1>
+            </div>
+            <a href="{% url 'fees_add' %}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Add Fee
+            </a>
+        </div>
+
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Student</th>
+                        <th>Fee Type</th>
+                        <th>Amount</th>
+                        <th>Due Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for fee in fees %}
+                    <tr>
+                        <td>{{ fee.student }}</td>
+                        <td>{{ fee.fee_type }}</td>
+                        <td>₹{{ fee.amount }}</td>
+                        <td>{{ fee.due_date }}</td>
+                        <td>
+                            <span
+                                class="badge badge-{% if fee.status == 'paid' %}success{% elif fee.status == 'unpaid' %}danger{% else %}warning{% endif %}">
+                                {{ fee.get_status_display }}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="flex gap-1">
+                                <a href="{% url 'fees_edit' fee.pk %}" class="btn btn-sm btn-warning">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="{% url 'fees_delete' fee.pk %}" class="btn btn-sm btn-danger">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center text-gray">No fee records found</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% if fees.has_other_pages %}
+        <div class="pagination">
+            {% if fees.has_previous %}
+            <a href="?page={{ fees.previous_page_number }}" class="page-link"><i class="fas fa-chevron-left"></i></a>
+            {% endif %}
+            {% for num in fees.paginator.page_range %}
+            <a href="?page={{ num }}" class="page-link {% if fees.number == num %}active{% endif %}">{{ num }}</a>
+            {% endfor %}
+            {% if fees.has_next %}
+            <a href="?page={{ fees.next_page_number }}" class="page-link"><i class="fas fa-chevron-right"></i></a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </main>
+</div>
+
+{% include 'partials/footer.html' %}
+{% endblock %}

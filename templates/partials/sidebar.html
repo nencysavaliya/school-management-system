@@ -1,0 +1,52 @@
+{% load static %}
+<!-- Sidebar -->
+<aside class="sidebar">
+    <nav class="sidebar-menu">
+        <div class="sidebar-title">Dashboard</div>
+        <a href="{% url 'admin_dashboard' %}"
+            class="sidebar-link {% if request.path == '/admin-panel/' %}active{% endif %}">
+            <i class="fas fa-tachometer-alt"></i>
+            <span>Dashboard</span>
+        </a>
+
+        <div class="sidebar-title">Management</div>
+        <a href="{% url 'student_list' %}" class="sidebar-link {% if 'students' in request.path %}active{% endif %}">
+            <i class="fas fa-user-graduate"></i>
+            <span>Students</span>
+        </a>
+        <a href="{% url 'teacher_list' %}" class="sidebar-link {% if 'teachers' in request.path %}active{% endif %}">
+            <i class="fas fa-chalkboard-teacher"></i>
+            <span>Teachers</span>
+        </a>
+        <a href="{% url 'class_list' %}" class="sidebar-link {% if 'classes' in request.path %}active{% endif %}">
+            <i class="fas fa-school"></i>
+            <span>Classes</span>
+        </a>
+        <a href="{% url 'subject_list' %}" class="sidebar-link {% if 'subjects' in request.path %}active{% endif %}">
+            <i class="fas fa-book"></i>
+            <span>Subjects</span>
+        </a>
+
+        <div class="sidebar-title">Attendance</div>
+        <a href="{% url 'student_attendance_list' %}"
+            class="sidebar-link {% if 'attendance/students' in request.path %}active{% endif %}">
+            <i class="fas fa-calendar-check"></i>
+            <span>Student Attendance</span>
+        </a>
+        <a href="{% url 'teacher_attendance_list' %}"
+            class="sidebar-link {% if 'attendance/teachers' in request.path %}active{% endif %}">
+            <i class="fas fa-user-check"></i>
+            <span>Teacher Attendance</span>
+        </a>
+
+        <div class="sidebar-title">Finance</div>
+        <a href="{% url 'fees_list' %}" class="sidebar-link {% if 'fees' in request.path %}active{% endif %}">
+            <i class="fas fa-rupee-sign"></i>
+            <span>Fees</span>
+        </a>
+        <a href="{% url 'salary_list' %}" class="sidebar-link {% if 'salary' in request.path %}active{% endif %}">
+            <i class="fas fa-money-bill-wave"></i>
+            <span>Salary</span>
+        </a>
+    </nav>
+</aside>

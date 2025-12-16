@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Mark Teacher Attendance - School Management System{% endblock %}
+
+{% block content %}
+{% include 'partials/admin_header.html' %}
+
+<div class="dashboard-layout">
+    {% include 'partials/sidebar.html' %}
+
+    <main class="main-content">
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">Mark Teacher Attendance</h1>
+            </div>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-body">
+                <form method="get" class="flex gap-2 items-center">
+                    <input type="date" name="date" value="{{ selected_date }}" class="form-control"
+                        style="width: auto;">
+                    <button type="submit" class="btn btn-secondary">
+                        <i class="fas fa-filter"></i> Change Date
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="date" value="{{ selected_date }}">
+
+                    <div class="attendance-grid">
+                        {% for teacher in teachers %}
+                        <div class="attendance-item">
+                            <div class="recent-avatar"
+                                style="width: 40px; height: 40px; font-size: 0.875rem; background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                                {{ teacher.name|slice:":1" }}{{ teacher.surname|slice:":1" }}
+                            </div>
+                            <div class="recent-info" style="flex: 1;">
+                                <div class="recent-name">{{ teacher.full_name }}</div>
+                                <div class="recent-meta">{{ teacher.employee_id }}</div>
+                            </div>
+                            <div class="attendance-status">
+                                <input type="hidden" name="status_{{ teacher.pk }}" value="present">
+                                <button type="button" class="status-btn present active" data-status="present">P</button>
+                                <button type="button" class="status-btn absent" data-status="absent">A</button>
+                                <button type="button" class="status-btn late" data-status="late">L</button>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <p class="text-gray">No teachers found.</p>
+                        {% endfor %}
+                    </div>
+
+                    {% if teachers %}
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-save"></i> Save Attendance
+                        </button>
+                    </div>
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+    </main>
+</div>
+
+{% include 'partials/footer.html' %}
+{% endblock %}

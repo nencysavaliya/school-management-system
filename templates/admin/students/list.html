@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Students - School Management System{% endblock %}
+
+{% block content %}
+{% include 'partials/admin_header.html' %}
+
+<div class="dashboard-layout">
+    {% include 'partials/sidebar.html' %}
+
+    <main class="main-content">
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">Students</h1>
+                <div class="breadcrumb">
+                    <a href="{% url 'admin_dashboard' %}">Dashboard</a>
+                    <span>/</span>
+                    <span>Students</span>
+                </div>
+            </div>
+            <a href="{% url 'student_add' %}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Add Student
+            </a>
+        </div>
+
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{% if message.tags == 'error' %}error{% else %}{{ message.tags }}{% endif %}">
+            <i
+                class="fas fa-{% if message.tags == 'error' %}exclamation-circle{% elif message.tags == 'success' %}check-circle{% else %}info-circle{% endif %}"></i>
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
+
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Admission No.</th>
+                        <th>Name</th>
+                        <th>Class</th>
+                        <th>Roll No.</th>
+                        <th>Mobile</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                    <tr>
+                        <td>{{ student.admission_no }}</td>
+                        <td>
+                            <div class="flex items-center gap-2">
+                                <div class="recent-avatar" style="width: 35px; height: 35px; font-size: 0.875rem;">
+                                    {{ student.name|slice:":1" }}{{ student.surname|slice:":1" }}
+                                </div>
+                                {{ student.name }} {{ student.surname }}
+                            </div>
+                        </td>
+                        <td>{{ student.student_class|default:"-" }}</td>
+                        <td>{{ student.roll_no }}</td>
+                        <td>{{ student.mobile|default:"-" }}</td>
+                        <td>
+                            <div class="flex gap-1">
+                                <a href="{% url 'student_detail' student.pk %}" class="btn btn-sm btn-secondary"
+                                    title="View">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a href="{% url 'student_edit' student.pk %}" class="btn btn-sm btn-warning"
+                                    title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="{% url 'student_delete' student.pk %}" class="btn btn-sm btn-danger"
+                                    title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center text-gray">No students found</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% if students.has_other_pages %}
+        <div class="pagination">
+            {% if students.has_previous %}
+            <a href="?page={{ students.previous_page_number }}" class="page-link">
+                <i class="fas fa-chevron-left"></i>
+            </a>
+            {% endif %}
+
+            {% for num in students.paginator.page_range %}
+            <a href="?page={{ num }}" class="page-link {% if students.number == num %}active{% endif %}">
+                {{ num }}
+            </a>
+            {% endfor %}
+
+            {% if students.has_next %}
+            <a href="?page={{ students.next_page_number }}" class="page-link">
+                <i class="fas fa-chevron-right"></i>
+            </a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </main>
+</div>
+
+{% include 'partials/footer.html' %}
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Delete Class - School Management System{% endblock %}
+
+{% block content %}
+{% include 'partials/admin_header.html' %}
+
+<div class="dashboard-layout">
+    {% include 'partials/sidebar.html' %}
+
+    <main class="main-content">
+        <div class="card" style="max-width: 500px; margin: 2rem auto;">
+            <div class="card-body">
+                <div class="delete-confirmation">
+                    <div class="delete-icon">
+                        <i class="fas fa-trash-alt"></i>
+                    </div>
+                    <h2 class="delete-title">Delete Class?</h2>
+                    <p class="delete-text">
+                        Are you sure you want to delete <strong>{{ class }}</strong>?<br>
+                        This action cannot be undone.
+                    </p>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="delete-actions">
+                            <a href="{% url 'class_list' %}" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+{% include 'partials/footer.html' %}
+{% endblock %}

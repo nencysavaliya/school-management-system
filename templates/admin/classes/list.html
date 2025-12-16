@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Classes - School Management System{% endblock %}
+
+{% block content %}
+{% include 'partials/admin_header.html' %}
+
+<div class="dashboard-layout">
+    {% include 'partials/sidebar.html' %}
+
+    <main class="main-content">
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">Classes</h1>
+                <div class="breadcrumb">
+                    <a href="{% url 'admin_dashboard' %}">Dashboard</a>
+                    <span>/</span>
+                    <span>Classes</span>
+                </div>
+            </div>
+            <a href="{% url 'class_add' %}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Add Class
+            </a>
+        </div>
+
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{% if message.tags == 'error' %}error{% else %}{{ message.tags }}{% endif %}">
+            <i class="fas fa-check-circle"></i> {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
+
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Class Name</th>
+                        <th>Section</th>
+                        <th>Students</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for class in classes %}
+                    <tr>
+                        <td>{{ class.name }}</td>
+                        <td>{{ class.section|default:"-" }}</td>
+                        <td>{{ class.student_count }}</td>
+                        <td>
+                            <div class="flex gap-1">
+                                <a href="{% url 'class_edit' class.pk %}" class="btn btn-sm btn-warning" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="{% url 'class_delete' class.pk %}" class="btn btn-sm btn-danger"
+                                    title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center text-gray">No classes found</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+</div>
+
+{% include 'partials/footer.html' %}
+{% endblock %}

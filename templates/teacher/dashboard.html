@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Teacher Dashboard - School Management System{% endblock %}
+
+{% block content %}
+<header class="header">
+    <div class="container">
+        <div class="header-content">
+            <a href="{% url 'home' %}" class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <span>School Management</span>
+            </a>
+
+            <nav class="nav">
+                <a href="{% url 'home' %}" class="nav-link">
+                    <i class="fas fa-home"></i> Home
+                </a>
+                <a href="{% url 'teacher_dashboard' %}" class="nav-link active">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </a>
+
+                <div class="dropdown">
+                    <div class="nav-link dropdown-toggle">
+                        <i class="fas fa-user-circle"></i>
+                        {{ user_name }}
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="dropdown-menu">
+                        <a href="{% url 'logout' %}" class="dropdown-item danger">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </div>
+</header>
+
+<div class="container" style="padding: 2rem 1rem;">
+    <div class="page-header">
+        <h1 class="page-title">Welcome, {{ teacher.full_name }}!</h1>
+    </div>
+
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+    {% endif %}
+
+    <!-- Stats -->
+    <div class="stats-grid" style="grid-template-columns: repeat(3, 1fr);">
+        <div class="stats-card success">
+            <div class="stats-icon"><i class="fas fa-check-circle"></i></div>
+            <div class="stats-value">{{ present_count }}</div>
+            <div class="stats-label">Days Present (This Month)</div>
+        </div>
+        <div class="stats-card danger">
+            <div class="stats-icon"><i class="fas fa-times-circle"></i></div>
+            <div class="stats-value">{{ absent_count }}</div>
+            <div class="stats-label">Days Absent (This Month)</div>
+        </div>
+        <div class="stats-card warning">
+            <div class="stats-icon"><i class="fas fa-clock"></i></div>
+            <div class="stats-value">{{ late_count }}</div>
+            <div class="stats-label">Days Late (This Month)</div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions mb-4">
+        <a href="{% url 'teacher_mark_student_attendance' %}" class="btn btn-primary">
+            <i class="fas fa-clipboard-check"></i> Mark Student Attendance
+        </a>
+        <a href="{% url 'teacher_attendance_history' %}" class="btn btn-secondary">
+            <i class="fas fa-history"></i> My Attendance History
+        </a>
+    </div>
+
+    <div class="recent-grid">
+        <!-- Profile -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fas fa-user"></i> My Profile</h3>
+            </div>
+            <div class="card-body">
+                <div class="profile-info">
+                    <div class="profile-info-item">
+                        <span class="profile-info-label">Employee ID</span>
+                        <span class="profile-info-value">{{ teacher.employee_id }}</span>
+                    </div>
+                    <div class="profile-info-item">
+                        <span class="profile-info-label">Email</span>
+                        <span class="profile-info-value">{{ teacher.email }}</span>
+                    </div>
+                    <div class="profile-info-item">
+                        <span class="profile-info-label">Mobile</span>
+                        <span class="profile-info-value">{{ teacher.mobile|default:"-" }}</span>
+                    </div>
+                    <div class="profile-info-item">
+                        <span class="profile-info-label">Qualification</span>
+                        <span class="profile-info-value">{{ teacher.qualification|default:"-" }}</span>
+                    </div>
+                    <div class="profile-info-item">
+                        <span class="profile-info-label">Joining Date</span>
+                        <span class="profile-info-value">{{ teacher.joining_date|default:"-" }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Attendance -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fas fa-calendar-check"></i> Recent Attendance</h3>
+                <a href="{% url 'teacher_attendance_history' %}" class="btn btn-sm btn-outline">View All</a>
+            </div>
+            <div class="card-body">
+                <div class="table-container" style="box-shadow: none;">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for att in recent_attendance %}
+                            <tr>
+                                <td>{{ att.date }}</td>
+                                <td>
+                                    <span
+                                        class="badge badge-{% if att.status == 'present' %}success{% elif att.status == 'absent' %}danger{% else %}warning{% endif %}">
+                                        {{ att.get_status_display }}
+                                    </span>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="2" class="text-center text-gray">No records</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include 'partials/footer.html' %}
+{% endblock %}

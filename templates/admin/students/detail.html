@@ -1,0 +1,184 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ student.full_name }} - School Management System{% endblock %}
+
+{% block content %}
+{% include 'partials/admin_header.html' %}
+
+<div class="dashboard-layout">
+    {% include 'partials/sidebar.html' %}
+
+    <main class="main-content">
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">Student Details</h1>
+                <div class="breadcrumb">
+                    <a href="{% url 'admin_dashboard' %}">Dashboard</a>
+                    <span>/</span>
+                    <a href="{% url 'student_list' %}">Students</a>
+                    <span>/</span>
+                    <span>{{ student.full_name }}</span>
+                </div>
+            </div>
+            <div class="flex gap-2">
+                <a href="{% url 'student_edit' student.pk %}" class="btn btn-warning">
+                    <i class="fas fa-edit"></i> Edit
+                </a>
+                <a href="{% url 'student_delete' student.pk %}" class="btn btn-danger">
+                    <i class="fas fa-trash"></i> Delete
+                </a>
+            </div>
+        </div>
+
+        <div class="recent-grid">
+            <!-- Profile Card -->
+            <div class="card">
+                <div class="card-body">
+                    <div class="profile-card">
+                        <div class="profile-avatar">
+                            {{ student.name|slice:":1" }}{{ student.surname|slice:":1" }}
+                        </div>
+                        <h2 class="profile-name">{{ student.full_name }}</h2>
+                        <p class="profile-role">Student | {{ student.student_class|default:"No Class" }}</p>
+
+                        <div class="profile-info">
+                            <div class="profile-info-item">
+                                <span class="profile-info-label">Admission No.</span>
+                                <span class="profile-info-value">{{ student.admission_no }}</span>
+                            </div>
+                            <div class="profile-info-item">
+                                <span class="profile-info-label">Roll No.</span>
+                                <span class="profile-info-value">{{ student.roll_no }}</span>
+                            </div>
+                            <div class="profile-info-item">
+                                <span class="profile-info-label">Email</span>
+                                <span class="profile-info-value">{{ student.email }}</span>
+                            </div>
+                            <div class="profile-info-item">
+                                <span class="profile-info-label">Mobile</span>
+                                <span class="profile-info-value">{{ student.mobile|default:"-" }}</span>
+                            </div>
+                            <div class="profile-info-item">
+                                <span class="profile-info-label">Gender</span>
+                                <span class="profile-info-value">{{ student.get_gender_display }}</span>
+                            </div>
+                            <div class="profile-info-item">
+                                <span class="profile-info-label">DOB</span>
+                                <span class="profile-info-value">{{ student.dob|default:"-" }}</span>
+                            </div>
+                            <div class="profile-info-item">
+                                <span class="profile-info-label">Address</span>
+                                <span class="profile-info-value">{{ student.address|default:"-" }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Parent Info -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fas fa-users"></i> Parent Information</h3>
+                </div>
+                <div class="card-body">
+                    <div class="profile-info">
+                        <div class="profile-info-item">
+                            <span class="profile-info-label">Parent Name</span>
+                            <span class="profile-info-value">{{ student.parent_name|default:"-" }}</span>
+                        </div>
+                        <div class="profile-info-item">
+                            <span class="profile-info-label">Parent Mobile</span>
+                            <span class="profile-info-value">{{ student.parent_mobile|default:"-" }}</span>
+                        </div>
+                        <div class="profile-info-item">
+                            <span class="profile-info-label">Parent Email</span>
+                            <span class="profile-info-value">{{ student.parent_email|default:"-" }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Attendance -->
+        <div class="card mt-3">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fas fa-calendar-check"></i> Recent Attendance</h3>
+            </div>
+            <div class="card-body">
+                <div class="table-container" style="box-shadow: none;">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Marked By</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for attendance in attendances %}
+                            <tr>
+                                <td>{{ attendance.date }}</td>
+                                <td>
+                                    <span
+                                        class="badge badge-{% if attendance.status == 'present' %}success{% elif attendance.status == 'absent' %}danger{% else %}warning{% endif %}">
+                                        {{ attendance.get_status_display }}
+                                    </span>
+                                </td>
+                                <td>{{ attendance.marked_by|default:"-" }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="3" class="text-center text-gray">No attendance records</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fees -->
+        <div class="card mt-3">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fas fa-rupee-sign"></i> Fees</h3>
+            </div>
+            <div class="card-body">
+                <div class="table-container" style="box-shadow: none;">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Fee Type</th>
+                                <th>Amount</th>
+                                <th>Due Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for fee in fees %}
+                            <tr>
+                                <td>{{ fee.fee_type }}</td>
+                                <td>₹{{ fee.amount }}</td>
+                                <td>{{ fee.due_date }}</td>
+                                <td>
+                                    <span
+                                        class="badge badge-{% if fee.status == 'paid' %}success{% elif fee.status == 'unpaid' %}danger{% else %}warning{% endif %}">
+                                        {{ fee.get_status_display }}
+                                    </span>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center text-gray">No fee records</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+{% include 'partials/footer.html' %}
+{% endblock %}

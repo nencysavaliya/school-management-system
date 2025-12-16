@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Salary - School Management System{% endblock %}
+
+{% block content %}
+{% include 'partials/admin_header.html' %}
+
+<div class="dashboard-layout">
+    {% include 'partials/sidebar.html' %}
+
+    <main class="main-content">
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">Salary Management</h1>
+            </div>
+            <a href="{% url 'salary_add' %}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Add Salary
+            </a>
+        </div>
+
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Teacher</th>
+                        <th>Month</th>
+                        <th>Amount</th>
+                        <th>Paid Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for salary in salaries %}
+                    <tr>
+                        <td>{{ salary.teacher }}</td>
+                        <td>{{ salary.month }}</td>
+                        <td>₹{{ salary.amount }}</td>
+                        <td>{{ salary.paid_date|default:"-" }}</td>
+                        <td>
+                            <span
+                                class="badge badge-{% if salary.status == 'paid' %}success{% else %}danger{% endif %}">
+                                {{ salary.get_status_display }}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="flex gap-1">
+                                <a href="{% url 'salary_edit' salary.pk %}" class="btn btn-sm btn-warning">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="{% url 'salary_delete' salary.pk %}" class="btn btn-sm btn-danger">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center text-gray">No salary records found</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% if salaries.has_other_pages %}
+        <div class="pagination">
+            {% if salaries.has_previous %}
+            <a href="?page={{ salaries.previous_page_number }}" class="page-link"><i
+                    class="fas fa-chevron-left"></i></a>
+            {% endif %}
+            {% for num in salaries.paginator.page_range %}
+            <a href="?page={{ num }}" class="page-link {% if salaries.number == num %}active{% endif %}">{{ num }}</a>
+            {% endfor %}
+            {% if salaries.has_next %}
+            <a href="?page={{ salaries.next_page_number }}" class="page-link"><i class="fas fa-chevron-right"></i></a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </main>
+</div>
+
+{% include 'partials/footer.html' %}
+{% endblock %}

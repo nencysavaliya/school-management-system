@@ -1,0 +1,181 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ teacher.full_name }} - School Management System{% endblock %}
+
+{% block content %}
+{% include 'partials/admin_header.html' %}
+
+<div class="dashboard-layout">
+    {% include 'partials/sidebar.html' %}
+
+    <main class="main-content">
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">Teacher Details</h1>
+                <div class="breadcrumb">
+                    <a href="{% url 'admin_dashboard' %}">Dashboard</a>
+                    <span>/</span>
+                    <a href="{% url 'teacher_list' %}">Teachers</a>
+                    <span>/</span>
+                    <span>{{ teacher.full_name }}</span>
+                </div>
+            </div>
+            <div class="flex gap-2">
+                <a href="{% url 'teacher_edit' teacher.pk %}" class="btn btn-warning">
+                    <i class="fas fa-edit"></i> Edit
+                </a>
+                <a href="{% url 'teacher_delete' teacher.pk %}" class="btn btn-danger">
+                    <i class="fas fa-trash"></i> Delete
+                </a>
+            </div>
+        </div>
+
+        <div class="recent-grid">
+            <!-- Profile Card -->
+            <div class="card">
+                <div class="card-body">
+                    <div class="profile-card">
+                        <div class="profile-avatar"
+                            style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                            {{ teacher.name|slice:":1" }}{{ teacher.surname|slice:":1" }}
+                        </div>
+                        <h2 class="profile-name">{{ teacher.full_name }}</h2>
+                        <p class="profile-role">Teacher | ID: {{ teacher.employee_id }}</p>
+
+                        <div class="profile-info">
+                            <div class="profile-info-item">
+                                <span class="profile-info-label">Email</span>
+                                <span class="profile-info-value">{{ teacher.email }}</span>
+                            </div>
+                            <div class="profile-info-item">
+                                <span class="profile-info-label">Mobile</span>
+                                <span class="profile-info-value">{{ teacher.mobile|default:"-" }}</span>
+                            </div>
+                            <div class="profile-info-item">
+                                <span class="profile-info-label">Gender</span>
+                                <span class="profile-info-value">{{ teacher.get_gender_display }}</span>
+                            </div>
+                            <div class="profile-info-item">
+                                <span class="profile-info-label">DOB</span>
+                                <span class="profile-info-value">{{ teacher.dob|default:"-" }}</span>
+                            </div>
+                            <div class="profile-info-item">
+                                <span class="profile-info-label">Address</span>
+                                <span class="profile-info-value">{{ teacher.address|default:"-" }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Employment Info -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fas fa-briefcase"></i> Employment Information</h3>
+                </div>
+                <div class="card-body">
+                    <div class="profile-info">
+                        <div class="profile-info-item">
+                            <span class="profile-info-label">Qualification</span>
+                            <span class="profile-info-value">{{ teacher.qualification|default:"-" }}</span>
+                        </div>
+                        <div class="profile-info-item">
+                            <span class="profile-info-label">Joining Date</span>
+                            <span class="profile-info-value">{{ teacher.joining_date|default:"-" }}</span>
+                        </div>
+                        <div class="profile-info-item">
+                            <span class="profile-info-label">Experience</span>
+                            <span class="profile-info-value">{{ teacher.experience|default:"-" }}</span>
+                        </div>
+                        <div class="profile-info-item">
+                            <span class="profile-info-label">Salary</span>
+                            <span class="profile-info-value">₹{{ teacher.salary }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Attendance -->
+        <div class="card mt-3">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fas fa-calendar-check"></i> Recent Attendance</h3>
+            </div>
+            <div class="card-body">
+                <div class="table-container" style="box-shadow: none;">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Remarks</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for attendance in attendances %}
+                            <tr>
+                                <td>{{ attendance.date }}</td>
+                                <td>
+                                    <span
+                                        class="badge badge-{% if attendance.status == 'present' %}success{% elif attendance.status == 'absent' %}danger{% else %}warning{% endif %}">
+                                        {{ attendance.get_status_display }}
+                                    </span>
+                                </td>
+                                <td>{{ attendance.remarks|default:"-" }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="3" class="text-center text-gray">No attendance records</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Salary History -->
+        <div class="card mt-3">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fas fa-money-bill-wave"></i> Salary History</h3>
+            </div>
+            <div class="card-body">
+                <div class="table-container" style="box-shadow: none;">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Month</th>
+                                <th>Amount</th>
+                                <th>Paid Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for salary in salaries %}
+                            <tr>
+                                <td>{{ salary.month }}</td>
+                                <td>₹{{ salary.amount }}</td>
+                                <td>{{ salary.paid_date|default:"-" }}</td>
+                                <td>
+                                    <span
+                                        class="badge badge-{% if salary.status == 'paid' %}success{% else %}danger{% endif %}">
+                                        {{ salary.get_status_display }}
+                                    </span>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center text-gray">No salary records</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+{% include 'partials/footer.html' %}
+{% endblock %}

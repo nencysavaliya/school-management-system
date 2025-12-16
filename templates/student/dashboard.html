@@ -1,0 +1,216 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Student Dashboard - School Management System{% endblock %}
+
+{% block content %}
+<header class="header">
+    <div class="container">
+        <div class="header-content">
+            <a href="{% url 'home' %}" class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <span>School Management</span>
+            </a>
+
+            <nav class="nav">
+                <a href="{% url 'home' %}" class="nav-link">
+                    <i class="fas fa-home"></i> Home
+                </a>
+                <a href="{% url 'student_dashboard' %}" class="nav-link active">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </a>
+
+                <div class="dropdown">
+                    <div class="nav-link dropdown-toggle">
+                        <i class="fas fa-user-circle"></i>
+                        {{ user_name }}
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="dropdown-menu">
+                        <a href="{% url 'logout' %}" class="dropdown-item danger">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </div>
+</header>
+
+<div class="container" style="padding: 2rem 1rem;">
+    <div class="page-header">
+        <h1 class="page-title">Welcome, {{ student.full_name }}!</h1>
+    </div>
+
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+    {% endif %}
+
+    <!-- Stats -->
+    <div class="stats-grid" style="grid-template-columns: repeat(3, 1fr);">
+        <div class="stats-card success">
+            <div class="stats-icon"><i class="fas fa-check-circle"></i></div>
+            <div class="stats-value">{{ present_count }}</div>
+            <div class="stats-label">Days Present (This Month)</div>
+        </div>
+        <div class="stats-card danger">
+            <div class="stats-icon"><i class="fas fa-times-circle"></i></div>
+            <div class="stats-value">{{ absent_count }}</div>
+            <div class="stats-label">Days Absent (This Month)</div>
+        </div>
+        <div class="stats-card warning">
+            <div class="stats-icon"><i class="fas fa-clock"></i></div>
+            <div class="stats-value">{{ late_count }}</div>
+            <div class="stats-label">Days Late (This Month)</div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions mb-4">
+        <a href="{% url 'student_attendance_history' %}" class="btn btn-primary">
+            <i class="fas fa-calendar-check"></i> Attendance History
+        </a>
+        <a href="{% url 'student_fees_history' %}" class="btn btn-secondary">
+            <i class="fas fa-rupee-sign"></i> Fees History
+        </a>
+    </div>
+
+    <div class="recent-grid">
+        <!-- Profile Card -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fas fa-user"></i> My Profile</h3>
+            </div>
+            <div class="card-body">
+                <div class="profile-info">
+                    <div class="profile-info-item">
+                        <span class="profile-info-label">Admission No.</span>
+                        <span class="profile-info-value">{{ student.admission_no }}</span>
+                    </div>
+                    <div class="profile-info-item">
+                        <span class="profile-info-label">Roll No.</span>
+                        <span class="profile-info-value">{{ student.roll_no }}</span>
+                    </div>
+                    <div class="profile-info-item">
+                        <span class="profile-info-label">Class</span>
+                        <span class="profile-info-value">{{ student.student_class|default:"-" }}</span>
+                    </div>
+                    <div class="profile-info-item">
+                        <span class="profile-info-label">Section</span>
+                        <span class="profile-info-value">{{ student.section|default:"-" }}</span>
+                    </div>
+                    <div class="profile-info-item">
+                        <span class="profile-info-label">Email</span>
+                        <span class="profile-info-value">{{ student.email }}</span>
+                    </div>
+                    <div class="profile-info-item">
+                        <span class="profile-info-label">Mobile</span>
+                        <span class="profile-info-value">{{ student.mobile|default:"-" }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Parent Info -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fas fa-users"></i> Parent Information</h3>
+            </div>
+            <div class="card-body">
+                <div class="profile-info">
+                    <div class="profile-info-item">
+                        <span class="profile-info-label">Parent Name</span>
+                        <span class="profile-info-value">{{ student.parent_name|default:"-" }}</span>
+                    </div>
+                    <div class="profile-info-item">
+                        <span class="profile-info-label">Parent Mobile</span>
+                        <span class="profile-info-value">{{ student.parent_mobile|default:"-" }}</span>
+                    </div>
+                    <div class="profile-info-item">
+                        <span class="profile-info-label">Parent Email</span>
+                        <span class="profile-info-value">{{ student.parent_email|default:"-" }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Attendance & Pending Fees -->
+    <div class="recent-grid mt-3">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fas fa-calendar-check"></i> Recent Attendance</h3>
+                <a href="{% url 'student_attendance_history' %}" class="btn btn-sm btn-outline">View All</a>
+            </div>
+            <div class="card-body">
+                <div class="table-container" style="box-shadow: none;">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for att in recent_attendance %}
+                            <tr>
+                                <td>{{ att.date }}</td>
+                                <td>
+                                    <span
+                                        class="badge badge-{% if att.status == 'present' %}success{% elif att.status == 'absent' %}danger{% else %}warning{% endif %}">
+                                        {{ att.get_status_display }}
+                                    </span>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="2" class="text-center text-gray">No records</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fas fa-rupee-sign"></i> Pending Fees</h3>
+                <a href="{% url 'student_fees_history' %}" class="btn btn-sm btn-outline">View All</a>
+            </div>
+            <div class="card-body">
+                <div class="table-container" style="box-shadow: none;">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Fee Type</th>
+                                <th>Amount</th>
+                                <th>Due</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for fee in pending_fees %}
+                            <tr>
+                                <td>{{ fee.fee_type }}</td>
+                                <td>₹{{ fee.amount }}</td>
+                                <td>{{ fee.due_date }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="3" class="text-center text-gray">No pending fees</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include 'partials/footer.html' %}
+{% endblock %}

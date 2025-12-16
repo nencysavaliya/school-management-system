@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Home - School Management System{% endblock %}
+
+{% block content %}
+<!-- Header -->
+<header class="header">
+    <div class="container">
+        <div class="header-content">
+            <a href="{% url 'home' %}" class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <span>School Management</span>
+            </a>
+
+            <nav class="nav">
+                <a href="{% url 'home' %}" class="nav-link active">
+                    <i class="fas fa-home"></i> Home
+                </a>
+                <a href="{% url 'login' %}" class="nav-link">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </a>
+                <a href="{% url 'admin_dashboard' %}" class="nav-link">
+                    <i class="fas fa-cog"></i> Admin Panel
+                </a>
+
+                {% if request.session.user_id %}
+                <div class="dropdown">
+                    <div class="nav-link dropdown-toggle">
+                        <i class="fas fa-user-circle"></i>
+                        {{ request.session.user_name }}
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="dropdown-menu">
+                        <a href="{% if request.session.user_role == 'admin' %}{% url 'admin_dashboard' %}{% elif request.session.user_role == 'teacher' %}{% url 'teacher_dashboard' %}{% else %}{% url 'student_dashboard' %}{% endif %}"
+                            class="dropdown-item">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a>
+                        <a href="{% url 'logout' %}" class="dropdown-item danger">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </div>
+                </div>
+                {% else %}
+                <a href="{% url 'login' %}" class="nav-link">
+                    <i class="fas fa-user"></i> Administrator
+                </a>
+                {% endif %}
+            </nav>
+        </div>
+    </div>
+</header>
+
+<!-- Hero Section -->
+<section class="hero">
+    <div class="container">
+        <h1 class="hero-title fade-in">Welcome to School Management System</h1>
+        <p class="hero-subtitle fade-in">
+            A complete solution for managing students, teachers, attendance, fees, and more.
+            Streamline your school operations with our easy-to-use platform.
+        </p>
+    </div>
+</section>
+
+<!-- Home Boxes -->
+<div class="home-boxes">
+    <div class="home-box fade-in">
+        <div class="home-box-icon">
+            <i class="fas fa-sign-in-alt"></i>
+        </div>
+        <h3 class="home-box-title">Login Portal</h3>
+        <p class="home-box-text">
+            Access your dashboard as Admin, Teacher, or Student. View your information,
+            attendance records, and more.
+        </p>
+        <a href="{% url 'login' %}" class="btn btn-primary btn-lg">
+            <i class="fas fa-arrow-right"></i> Login Now
+        </a>
+    </div>
+
+    <div class="home-box fade-in">
+        <div class="home-box-icon">
+            <i class="fas fa-user-shield"></i>
+        </div>
+        <h3 class="home-box-title">Admin Panel</h3>
+        <p class="home-box-text">
+            Manage students, teachers, classes, subjects, attendance, fees, and salaries.
+            Complete control over school operations.
+        </p>
+        <a href="{% url 'admin:index' %}" class="btn btn-primary btn-lg" target="_blank">
+            <i class="fas fa-arrow-right"></i> Admin Access
+        </a>
+    </div>
+</div>
+
+<!-- Features Section -->
+<section class="container mt-4 mb-4">
+    <div class="text-center mb-4">
+        <h2>Our Features</h2>
+        <p class="text-gray">Everything you need to manage your school efficiently</p>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stats-card primary">
+            <div class="stats-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="stats-label">Student Management</div>
+            <p style="font-size: 0.875rem; opacity: 0.9; margin-top: 0.5rem;">
+                Add, edit, and manage student records with ease
+            </p>
+        </div>
+
+        <div class="stats-card success">
+            <div class="stats-icon">
+                <i class="fas fa-chalkboard-teacher"></i>
+            </div>
+            <div class="stats-label">Teacher Management</div>
+            <p style="font-size: 0.875rem; opacity: 0.9; margin-top: 0.5rem;">
+                Manage teacher profiles, qualifications, and salary
+            </p>
+        </div>
+
+        <div class="stats-card warning">
+            <div class="stats-icon">
+                <i class="fas fa-calendar-check"></i>
+            </div>
+            <div class="stats-label">Attendance Tracking</div>
+            <p style="font-size: 0.875rem; opacity: 0.9; margin-top: 0.5rem;">
+                Track daily attendance for students and teachers
+            </p>
+        </div>
+
+        <div class="stats-card accent">
+            <div class="stats-icon">
+                <i class="fas fa-rupee-sign"></i>
+            </div>
+            <div class="stats-label">Fees & Salary</div>
+            <p style="font-size: 0.875rem; opacity: 0.9; margin-top: 0.5rem;">
+                Manage student fees and teacher salaries
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <p class="footer-text">
+                &copy; 2024 School Management System. All rights reserved.
+            </p>
+            <div class="footer-links">
+                <a href="#"><i class="fas fa-phone"></i> Contact</a>
+                <a href="#"><i class="fas fa-info-circle"></i> About</a>
+                <a href="#"><i class="fas fa-question-circle"></i> Help</a>
+            </div>
+        </div>
+    </div>
+</footer>
+{% endblock %}

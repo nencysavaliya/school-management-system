@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Admin Dashboard - School Management System{% endblock %}
+
+{% block content %}
+{% include 'partials/admin_header.html' %}
+
+<div class="dashboard-layout">
+    {% include 'partials/sidebar.html' %}
+
+    <main class="main-content">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">Dashboard</h1>
+                <div class="breadcrumb">
+                    <a href="{% url 'home' %}">Home</a>
+                    <span>/</span>
+                    <span>Admin Dashboard</span>
+                </div>
+            </div>
+        </div>
+
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{% if message.tags == 'error' %}error{% else %}{{ message.tags }}{% endif %}">
+            <i
+                class="fas fa-{% if message.tags == 'error' %}exclamation-circle{% elif message.tags == 'success' %}check-circle{% else %}info-circle{% endif %}"></i>
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
+
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stats-card primary">
+                <div class="stats-icon">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                </div>
+                <div class="stats-value">{{ total_teachers }}</div>
+                <div class="stats-label">Total Teachers</div>
+            </div>
+
+            <div class="stats-card success">
+                <div class="stats-icon">
+                    <i class="fas fa-user-graduate"></i>
+                </div>
+                <div class="stats-value">{{ total_students }}</div>
+                <div class="stats-label">Total Students</div>
+            </div>
+
+            <div class="stats-card warning">
+                <div class="stats-icon">
+                    <i class="fas fa-school"></i>
+                </div>
+                <div class="stats-value">{{ total_classes }}</div>
+                <div class="stats-label">Total Classes</div>
+            </div>
+
+            <div class="stats-card accent">
+                <div class="stats-icon">
+                    <i class="fas fa-book"></i>
+                </div>
+                <div class="stats-value">{{ total_subjects }}</div>
+                <div class="stats-label">Total Subjects</div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <a href="{% url 'student_add' %}" class="btn btn-primary">
+                <i class="fas fa-user-plus"></i> Add Student
+            </a>
+            <a href="{% url 'teacher_add' %}" class="btn btn-success">
+                <i class="fas fa-user-plus"></i> Add Teacher
+            </a>
+            <a href="{% url 'student_list' %}" class="btn btn-secondary">
+                <i class="fas fa-users"></i> View Students
+            </a>
+            <a href="{% url 'teacher_list' %}" class="btn btn-secondary">
+                <i class="fas fa-users"></i> View Teachers
+            </a>
+        </div>
+
+        <!-- Recent Students & Teachers -->
+        <div class="recent-grid">
+            <!-- Recent Students -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-user-graduate text-primary"></i> Recent Students
+                    </h3>
+                    <a href="{% url 'student_list' %}" class="btn btn-sm btn-outline">View All</a>
+                </div>
+                <div class="card-body">
+                    {% for student in recent_students %}
+                    <div class="recent-item">
+                        <div class="recent-avatar">
+                            {{ student.name|slice:":1" }}{{ student.surname|slice:":1" }}
+                        </div>
+                        <div class="recent-info">
+                            <div class="recent-name">{{ student.name }} {{ student.surname }}</div>
+                            <div class="recent-meta">
+                                {{ student.student_class }} | Roll: {{ student.roll_no }}
+                            </div>
+                        </div>
+                        <a href="{% url 'student_detail' student.pk %}" class="btn btn-sm btn-secondary">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                    </div>
+                    {% empty %}
+                    <p class="text-gray text-center">No students added yet</p>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Recent Teachers -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-chalkboard-teacher text-success"></i> Recent Teachers
+                    </h3>
+                    <a href="{% url 'teacher_list' %}" class="btn btn-sm btn-outline">View All</a>
+                </div>
+                <div class="card-body">
+                    {% for teacher in recent_teachers %}
+                    <div class="recent-item">
+                        <div class="recent-avatar"
+                            style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                            {{ teacher.name|slice:":1" }}{{ teacher.surname|slice:":1" }}
+                        </div>
+                        <div class="recent-info">
+                            <div class="recent-name">{{ teacher.name }} {{ teacher.surname }}</div>
+                            <div class="recent-meta">
+                                ID: {{ teacher.employee_id }} | {{ teacher.qualification }}
+                            </div>
+                        </div>
+                        <a href="{% url 'teacher_detail' teacher.pk %}" class="btn btn-sm btn-secondary">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                    </div>
+                    {% empty %}
+                    <p class="text-gray text-center">No teachers added yet</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+{% include 'partials/footer.html' %}
+{% endblock %}
