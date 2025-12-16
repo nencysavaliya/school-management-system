@@ -39,8 +39,9 @@
                 <select name="class" class="form-control" style="width: auto;">
                     <option value="">All Classes</option>
                     {% for class in classes %}
-                    <option value="{{ class.pk }}" {% if selected_class==class.pk|stringformat:"i" %}selected{% endif
-                        %}>{{ class }}</option>
+                    <option value="{{ class.pk }}" {% if selected_class|stringformat:"i" == class.pk|stringformat:"i" %}selected{% endif %}>
+                        {{ class }}
+                    </option>
                     {% endfor %}
                 </select>
                 <button type="submit" class="btn btn-secondary"><i class="fas fa-filter"></i> Filter</button>
