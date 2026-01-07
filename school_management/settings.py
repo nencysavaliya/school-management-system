@@ -12,8 +12,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-default-key')
 
-DEBUG = 'False'
-ALLOWED_HOSTS = ['*']
+DEBUG = False
+ALLOWED_HOSTS = [
+    "school-management-system-production-e22b.up.railway.app",
+    ".up.railway.app",
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -82,6 +85,15 @@ LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'Asia/Kolkata'
 USE_I18N = True
 USE_TZ = True
+
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://school-management-system-production-e22b.up.railway.app",
+]
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
