@@ -12,10 +12,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-default-key')
 
-DEBUG = False
+DEBUG = True
 ALLOWED_HOSTS = [
     "school-management-system-production-e22b.up.railway.app",
     ".up.railway.app",
+    "localhost",        # ← આ add કરો
+    "127.0.0.1",       # ← આ add કરો
 ]
 
 INSTALLED_APPS = [
