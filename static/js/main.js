@@ -7,6 +7,8 @@ document.addEventListener('DOMContentLoaded', function () {
     initFormValidation();
     initDeleteConfirmation();
     initAttendanceButtons();
+    initPasswordToggle();
+    initRegistrationValidation();
 });
 
 // Dropdown functionality
@@ -207,4 +209,73 @@ function initSearch(inputId, tableId) {
             row.style.display = text.includes(searchTerm) ? '' : 'none';
         });
     });
+}
+
+// Password toggle functionality
+function initPasswordToggle() {
+    const toggleIcons = document.querySelectorAll('.toggle-password');
+
+    toggleIcons.forEach(icon => {
+        icon.addEventListener('click', function () {
+            const targetId = this.dataset.target;
+            const passwordInput = document.getElementById(targetId);
+
+            if (passwordInput) {
+                if (passwordInput.type === 'password') {
+                    passwordInput.type = 'text';
+                    this.classList.remove('fa-eye');
+                    this.classList.add('fa-eye-slash');
+                } else {
+                    passwordInput.type = 'password';
+                    this.classList.remove('fa-eye-slash');
+                    this.classList.add('fa-eye');
+                }
+            }
+        });
+    });
+}
+
+// Registration form validation
+function initRegistrationValidation() {
+    const registerForm = document.querySelector('.register-form');
+
+    if (!registerForm) return;
+
+    registerForm.addEventListener('submit', function (e) {
+        const password = document.getElementById('password');
+        const confirmPassword = document.getElementById('confirm_password');
+
+        if (password && confirmPassword) {
+            if (password.value !== confirmPassword.value) {
+                e.preventDefault();
+                showFieldError(confirmPassword, 'Passwords do not match');
+                confirmPassword.classList.add('error');
+                return false;
+            }
+
+            if (password.value.length < 6) {
+                e.preventDefault();
+                showFieldError(password, 'Password must be at least 6 characters long');
+                password.classList.add('error');
+                return false;
+            }
+        }
+    });
+
+    // Real-time password match validation
+    const confirmPassword = document.getElementById('confirm_password');
+    if (confirmPassword) {
+        confirmPassword.addEventListener('input', function () {
+            const password = document.getElementById('password');
+            if (password && this.value) {
+                if (password.value !== this.value) {
+                    this.classList.add('error');
+                    showFieldError(this, 'Passwords do not match');
+                } else {
+                    this.classList.remove('error');
+                    removeFieldError(this);
+                }
+            }
+        });
+    }
 }

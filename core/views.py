@@ -89,7 +89,6 @@ def register_view(request):
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
         if form.is_valid():
-            role = form.cleaned_data['role']
             username = form.cleaned_data['username']
             name = form.cleaned_data['name']
             surname = form.cleaned_data['surname']
@@ -97,29 +96,16 @@ def register_view(request):
             password = form.cleaned_data['password']
             
             try:
-                if role == 'student':
-                    # Create student account
-                    student = Student(
-                        username=username,
-                        name=name,
-                        surname=surname,
-                        email=email
-                    )
-                    student.set_password(password)
-                    student.save()
-                    messages.success(request, 'Student account created successfully! Please login to continue.')
-                    
-                elif role == 'teacher':
-                    # Create teacher account
-                    teacher = Teacher(
-                        username=username,
-                        name=name,
-                        surname=surname,
-                        email=email
-                    )
-                    teacher.set_password(password)
-                    teacher.save()
-                    messages.success(request, 'Teacher account created successfully! Please login to continue.')
+                # Default to student role
+                student = Student(
+                    username=username,
+                    name=name,
+                    surname=surname,
+                    email=email
+                )
+                student.set_password(password)
+                student.save()
+                messages.success(request, 'Account created successfully! Please login to continue.')
                 
                 return redirect('login')
                 

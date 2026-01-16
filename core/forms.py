@@ -28,18 +28,7 @@ class LoginForm(forms.Form):
 
 class RegistrationForm(forms.Form):
     """Registration form for Students and Teachers"""
-    ROLE_CHOICES = [
-        ('student', 'Student'),
-        ('teacher', 'Teacher'),
-    ]
     
-    role = forms.ChoiceField(
-        choices=ROLE_CHOICES,
-        widget=forms.Select(attrs={
-            'class': 'form-control',
-            'id': 'role'
-        })
-    )
     username = forms.CharField(
         max_length=50,
         widget=forms.TextInput(attrs={
