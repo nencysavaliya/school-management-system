@@ -53,14 +53,58 @@
     </div>
 </header>
 
-<!-- Hero Section -->
-<section class="hero">
-    <div class="container">
-        <h1 class="hero-title fade-in">Welcome to School Management System</h1>
-        <p class="hero-subtitle fade-in">
-            A complete solution for managing students, teachers, attendance, fees, and more.
-            Streamline your school operations with our easy-to-use platform.
-        </p>
+<!-- Hero Section with Slider -->
+<section class="hero-slider">
+    <div class="slider-container">
+        <!-- Slide 1 -->
+        <div class="slide active">
+            <div class="slide-bg" style="background-image: url('{% static 'images/hero-slide-1.png' %}');"></div>
+        </div>
+        <!-- Slide 2 -->
+        <div class="slide">
+            <div class="slide-bg" style="background-image: url('{% static 'images/hero-slide-2.png' %}');"></div>
+        </div>
+        <!-- Slide 3 -->
+        <div class="slide">
+            <div class="slide-bg" style="background-image: url('{% static 'images/hero-slide-3.png' %}');"></div>
+        </div>
+
+        <!-- Overlay for all slides -->
+        <div class="slide-overlay"></div>
+
+        <!-- Content for Slide 1 -->
+        <div class="slide-content slide-1-content">
+            <h1 class="hero-title fade-in">Welcome to School Management System</h1>
+            <p class="hero-subtitle fade-in">
+                A complete solution for managing students, teachers, attendance, fees, and more.
+                Streamline your school operations with our easy-to-use platform.
+            </p>
+        </div>
+
+        <!-- Content for Slide 2 -->
+        <div class="slide-content slide-2-content" style="display: none;">
+            <h1 class="hero-title fade-in">Empower Your Educational Excellence</h1>
+            <p class="hero-subtitle fade-in">
+                Seamlessly manage academic records, track student progress, and enhance learning outcomes.
+                Transform your institution with modern technology.
+            </p>
+        </div>
+
+        <!-- Content for Slide 3 -->
+        <div class="slide-content slide-3-content" style="display: none;">
+            <h1 class="hero-title fade-in">Building Tomorrow's Leaders Today</h1>
+            <p class="hero-subtitle fade-in">
+                Comprehensive tools for attendance tracking, fee management, and administrative excellence.
+                Join hundreds of schools modernizing their operations.
+            </p>
+        </div>
+
+        <!-- Slider indicators -->
+        <div class="slider-indicators">
+            <span class="indicator active" data-slide="0"></span>
+            <span class="indicator" data-slide="1"></span>
+            <span class="indicator" data-slide="2"></span>
+        </div>
     </div>
 </section>
 

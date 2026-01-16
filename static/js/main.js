@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', function () {
     initAttendanceButtons();
     initPasswordToggle();
     initRegistrationValidation();
+    initHeroSlider(); // Add hero slider initialization
 });
 
 // Dropdown functionality
@@ -279,3 +280,75 @@ function initRegistrationValidation() {
         });
     }
 }
+
+// Hero Slider functionality
+function initHeroSlider() {
+    const sliderContainer = document.querySelector('.hero-slider');
+    if (!sliderContainer) return;
+
+    const slides = document.querySelectorAll('.slide');
+    const indicators = document.querySelectorAll('.indicator');
+    const slideContents = [
+        document.querySelector('.slide-1-content'),
+        document.querySelector('.slide-2-content'),
+        document.querySelector('.slide-3-content')
+    ];
+
+    let currentSlide = 0;
+    const slideInterval = 5000; // Change slide every 5 seconds
+    let autoSlide;
+
+    // Function to show specific slide
+    function showSlide(index) {
+        // Remove active class from all slides and indicators
+        slides.forEach(slide => slide.classList.remove('active'));
+        indicators.forEach(indicator => indicator.classList.remove('active'));
+        slideContents.forEach(content => {
+            if (content) content.style.display = 'none';
+        });
+
+        // Add active class to current slide and indicator
+        slides[index].classList.add('active');
+        indicators[index].classList.add('active');
+
+        // Show corresponding content
+        if (slideContents[index]) {
+            slideContents[index].style.display = 'block';
+        }
+
+        currentSlide = index;
+    }
+
+    // Function to go to next slide
+    function nextSlide() {
+        let next = (currentSlide + 1) % slides.length;
+        showSlide(next);
+    }
+
+    // Start automatic sliding
+    function startAutoSlide() {
+        autoSlide = setInterval(nextSlide, slideInterval);
+    }
+
+    // Stop automatic sliding
+    function stopAutoSlide() {
+        clearInterval(autoSlide);
+    }
+
+    // Add click event to indicators
+    indicators.forEach((indicator, index) => {
+        indicator.addEventListener('click', () => {
+            stopAutoSlide();
+            showSlide(index);
+            startAutoSlide(); // Restart auto-sliding after manual change
+        });
+    });
+
+    // Start the slider
+    startAutoSlide();
+
+    // Pause on hover
+    sliderContainer.addEventListener('mouseenter', stopAutoSlide);
+    sliderContainer.addEventListener('mouseleave', startAutoSlide);
+}
+
