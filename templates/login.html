@@ -52,8 +52,11 @@
                     <label class="form-label" for="password">
                         <i class="fas fa-lock"></i> Password
                     </label>
-                    <input type="password" name="password" id="password" class="form-control"
-                        placeholder="Enter your password" required>
+                    <div class="password-wrapper">
+                        <input type="password" name="password" id="password" class="form-control"
+                            placeholder="Enter your password" required>
+                        <i class="fas fa-eye toggle-password" data-target="password"></i>
+                    </div>
                 </div>
 
                 <button type="submit" class="btn btn-primary btn-lg login-btn">
@@ -62,6 +65,9 @@
             </form>
 
             <div class="login-footer">
+                <a href="{% url 'register' %}">
+                    <i class="fas fa-user-plus"></i> Register
+                </a>
                 <a href="{% url 'home' %}">
                     <i class="fas fa-arrow-left"></i> Back to Home
                 </a>

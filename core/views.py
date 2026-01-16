@@ -9,7 +9,7 @@ from .models import (
     StudentAttendance, TeacherAttendance, Fees, Salary
 )
 from .forms import (
-    LoginForm, StudentForm, TeacherForm, ClassForm, SubjectForm,
+    LoginForm, RegistrationForm, StudentForm, TeacherForm, ClassForm, SubjectForm,
     FeesForm, SalaryForm, StudentAttendanceForm, TeacherAttendanceForm
 )
 
@@ -82,6 +82,58 @@ def logout_view(request):
     request.session.flush()
     messages.success(request, 'You have been logged out successfully!')
     return redirect('home')
+
+
+def register_view(request):
+    """Registration view for Students and Teachers"""
+    if request.method == 'POST':
+        form = RegistrationForm(request.POST)
+        if form.is_valid():
+            role = form.cleaned_data['role']
+            username = form.cleaned_data['username']
+            name = form.cleaned_data['name']
+            surname = form.cleaned_data['surname']
+            email = form.cleaned_data['email']
+            password = form.cleaned_data['password']
+            
+            try:
+                if role == 'student':
+                    # Create student account
+                    student = Student(
+                        username=username,
+                        name=name,
+                        surname=surname,
+                        email=email
+                    )
+                    student.set_password(password)
+                    student.save()
+                    messages.success(request, 'Student account created successfully! Please login to continue.')
+                    
+                elif role == 'teacher':
+                    # Create teacher account
+                    teacher = Teacher(
+                        username=username,
+                        name=name,
+                        surname=surname,
+                        email=email
+                    )
+                    teacher.set_password(password)
+                    teacher.save()
+                    messages.success(request, 'Teacher account created successfully! Please login to continue.')
+                
+                return redirect('login')
+                
+            except Exception as e:
+                messages.error(request, f'An error occurred during registration: {str(e)}')
+        else:
+            # Display form errors
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, error)
+    else:
+        form = RegistrationForm()
+    
+    return render(request, 'register.html', {'form': form})
 
 
 # ==================== ADMIN DASHBOARD ====================
