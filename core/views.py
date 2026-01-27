@@ -4,6 +4,7 @@ from django.http import JsonResponse
 from django.db.models import Count, Sum
 from django.core.paginator import Paginator
 from datetime import datetime, date, timedelta
+import random
 from .models import (
     Student, Teacher, Class, Subject, Admin,
     StudentAttendance, TeacherAttendance, Fees, Salary
@@ -84,6 +85,21 @@ def logout_view(request):
     return redirect('home')
 
 
+def generate_admission_number():
+    """Generate unique admission number for students"""
+    year = datetime.now().year
+    # Generate random 5-digit number
+    random_num = random.randint(10000, 99999)
+    admission_no = f"ADM{year}{random_num}"
+    
+    # Check if exists, regenerate if duplicate
+    while Student.objects.filter(admission_no=admission_no).exists():
+        random_num = random.randint(10000, 99999)
+        admission_no = f"ADM{year}{random_num}"
+    
+    return admission_no
+
+
 def register_view(request):
     """Registration view for Students and Teachers"""
     if request.method == 'POST':
@@ -96,12 +112,16 @@ def register_view(request):
             password = form.cleaned_data['password']
             
             try:
-                # Default to student role
+                # Default to student role with auto-generated admission number
                 student = Student(
                     username=username,
                     name=name,
                     surname=surname,
-                    email=email
+                    email=email,
+                    admission_no=generate_admission_number(),
+                    admission_date=date.today(),
+                    gender='other',
+                    roll_no=''
                 )
                 student.set_password(password)
                 student.save()
