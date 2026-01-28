@@ -10,7 +10,7 @@ from .models import (
     StudentAttendance, TeacherAttendance, Fees, Salary
 )
 from .forms import (
-    LoginForm, RegistrationForm, StudentForm, TeacherForm, ClassForm, SubjectForm,
+    LoginForm, StudentForm, TeacherForm, ClassForm, SubjectForm,
     FeesForm, SalaryForm, StudentAttendanceForm, TeacherAttendanceForm
 )
 
@@ -100,46 +100,7 @@ def generate_admission_number():
     return admission_no
 
 
-def register_view(request):
-    """Registration view for Students and Teachers"""
-    if request.method == 'POST':
-        form = RegistrationForm(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data['username']
-            name = form.cleaned_data['name']
-            surname = form.cleaned_data['surname']
-            email = form.cleaned_data['email']
-            password = form.cleaned_data['password']
-            
-            try:
-                # Default to student role with auto-generated admission number
-                student = Student(
-                    username=username,
-                    name=name,
-                    surname=surname,
-                    email=email,
-                    admission_no=generate_admission_number(),
-                    admission_date=date.today(),
-                    gender='other',
-                    roll_no=''
-                )
-                student.set_password(password)
-                student.save()
-                messages.success(request, 'Account created successfully! Please login to continue.')
-                
-                return redirect('login')
-                
-            except Exception as e:
-                messages.error(request, f'An error occurred during registration: {str(e)}')
-        else:
-            # Display form errors
-            for field, errors in form.errors.items():
-                for error in errors:
-                    messages.error(request, error)
-    else:
-        form = RegistrationForm()
-    
-    return render(request, 'register.html', {'form': form})
+
 
 
 # ==================== ADMIN DASHBOARD ====================
